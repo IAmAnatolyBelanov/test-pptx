@@ -36,7 +36,10 @@ public class PresentationMaker
 		textBox.LineFormat.FillFormat.FillType = FillType.NoFill;
 		textBox.TextFrame.Text = "Тестовый тайтл";
 		textBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
-		textBox.TextFrame.Paragraphs[0].Portions[0].PortionFormat.FontHeight = 48;
+		var portion = textBox.TextFrame.Paragraphs[0].Portions[0];
+		portion.PortionFormat.FontHeight = 48;
+		portion.PortionFormat.FillFormat.FillType = FillType.Solid;
+		portion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
 	}
 
 	private async Task<string> CreateFilename()
