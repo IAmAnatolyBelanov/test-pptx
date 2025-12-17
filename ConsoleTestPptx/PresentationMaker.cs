@@ -341,6 +341,8 @@ public class PresentationMaker
 		chart.ChartData.Categories.Clear();
 		
 		var items = data.ToList();
+		var totalValue = items.Sum(x => x.Value);
+		
 		for (int i = 0; i < items.Count; i++)
 		{
 			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, items[i].Key));
@@ -353,6 +355,25 @@ public class PresentationMaker
 			var dataPoint = series.DataPoints.AddDataPointForPieSeries(workbook.GetCell(0, i + 1, 1, (double)items[i].Value));
 			dataPoint.Format.Fill.FillType = FillType.Solid;
 			dataPoint.Format.Fill.SolidFillColor.Color = colors[i % colors.Length];
+		}
+		
+		var hasSmallSegments = items.Any(x => (double)x.Value / totalValue < 0.05);
+		var canPlaceLabelsOnChart = items.Count <= 6 && !hasSmallSegments;
+		
+		if (canPlaceLabelsOnChart)
+		{
+			series.Labels.DefaultDataLabelFormat.ShowCategoryName = true;
+			series.Labels.DefaultDataLabelFormat.ShowValue = false;
+			series.Labels.DefaultDataLabelFormat.ShowLegendKey = false;
+			series.Labels.DefaultDataLabelFormat.Position = LegendDataLabelPosition.BestFit;
+			chart.Legend.Position = LegendPositionType.Bottom;
+		}
+		else
+		{
+			series.Labels.DefaultDataLabelFormat.ShowCategoryName = false;
+			series.Labels.DefaultDataLabelFormat.ShowValue = false;
+			series.Labels.DefaultDataLabelFormat.ShowLegendKey = false;
+			chart.Legend.Position = LegendPositionType.Bottom;
 		}
 		
 		chart.HasTitle = true;
