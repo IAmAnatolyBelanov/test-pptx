@@ -118,12 +118,14 @@ public class PresentationMaker
 		var tableMarginCm = 2.0;
 		var tableMarginPoints = tableMarginCm * 28.35;
 		var tableWidth = (float)slideSize.Width - (float)tableMarginPoints;
-		var columnWidth = tableWidth / 5;
+		var textColumnWidth = tableWidth * 0.3;
+		var dateColumnWidth = tableWidth * 0.3;
+		var numberColumnWidth = (tableWidth - textColumnWidth - dateColumnWidth) / 3;
 		
 		var tableX = ((float)slideSize.Width - tableWidth) / 2;
 		var tableY = 150f;
 		
-		double[] columnWidths = { columnWidth, columnWidth, columnWidth, columnWidth, columnWidth };
+		double[] columnWidths = { textColumnWidth, dateColumnWidth, numberColumnWidth, numberColumnWidth, numberColumnWidth };
 		var rowHeights = new double[rowCount + 1];
 		for (int i = 0; i < rowHeights.Length; i++)
 		{
@@ -159,13 +161,39 @@ public class PresentationMaker
 			dataRow[3].TextFrame.Text = (row * 20).ToString();
 			dataRow[4].TextFrame.Text = (row * 30).ToString();
 			
-			for (int col = 0; col < 5; col++)
-			{
-				var cell = dataRow[col];
-				cell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = col == 0 ? TextAlignment.Left : TextAlignment.Center;
-				var portion = cell.TextFrame.Paragraphs[0].Portions[0];
-				portion.PortionFormat.FontHeight = 12;
-			}
+			var textCell = dataRow[0];
+			textCell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Left;
+			textCell.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Top;
+			var textPortion = textCell.TextFrame.Paragraphs[0].Portions[0];
+			textPortion.PortionFormat.FontHeight = 12;
+			
+			var dateCell = dataRow[1];
+			dateCell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
+			dateCell.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Center;
+			var datePortion = dateCell.TextFrame.Paragraphs[0].Portions[0];
+			datePortion.PortionFormat.FontHeight = 12;
+			datePortion.PortionFormat.FillFormat.FillType = FillType.Solid;
+			datePortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Red;
+			
+			var numberCell1 = dataRow[2];
+			numberCell1.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Right;
+			numberCell1.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Bottom;
+			var numberPortion1 = numberCell1.TextFrame.Paragraphs[0].Portions[0];
+			numberPortion1.PortionFormat.FontHeight = 12;
+			numberPortion1.PortionFormat.LatinFont = new FontData("Arial");
+			
+			var numberCell2 = dataRow[3];
+			numberCell2.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Right;
+			numberCell2.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Bottom;
+			var numberPortion2 = numberCell2.TextFrame.Paragraphs[0].Portions[0];
+			numberPortion2.PortionFormat.FontHeight = 12;
+			numberPortion2.PortionFormat.LatinFont = new FontData("Calibri");
+			
+			var numberCell3 = dataRow[4];
+			numberCell3.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Right;
+			numberCell3.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Bottom;
+			var numberPortion3 = numberCell3.TextFrame.Paragraphs[0].Portions[0];
+			numberPortion3.PortionFormat.FontHeight = 12;
 		}
 	}
 
