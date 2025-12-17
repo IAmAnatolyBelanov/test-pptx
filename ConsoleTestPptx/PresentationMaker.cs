@@ -15,7 +15,8 @@ public class PresentationMaker
 	public async Task BuildPresentation()
 	{
 		FormatFirstSlide();
-		AddTableSlide();
+		AddTableSlide(4);
+		AddTableSlide(20);
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
 	}
@@ -75,7 +76,7 @@ public class PresentationMaker
 		thirdPortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
 	}
 
-	private void AddTableSlide()
+	private void AddTableSlide(int rowCount)
 	{
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
@@ -120,7 +121,11 @@ public class PresentationMaker
 		var tableY = 150f;
 		
 		double[] columnWidths = { columnWidth, columnWidth, columnWidth, columnWidth, columnWidth };
-		double[] rowHeights = { 50, 50, 50, 50, 50 };
+		var rowHeights = new double[rowCount + 1];
+		for (int i = 0; i < rowHeights.Length; i++)
+		{
+			rowHeights[i] = 50;
+		}
 		
 		var table = slide.Shapes.AddTable(tableX, tableY, columnWidths, rowHeights);
 		
@@ -142,7 +147,7 @@ public class PresentationMaker
 			portion.PortionFormat.FontBold = NullableBool.True;
 		}
 		
-		for (int row = 1; row < 5; row++)
+		for (int row = 1; row <= rowCount; row++)
 		{
 			var dataRow = table.Rows[row];
 			dataRow[0].TextFrame.Text = $"Текст {row}";
