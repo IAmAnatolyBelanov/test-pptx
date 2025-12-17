@@ -80,25 +80,24 @@ public class PresentationMaker
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
 		
-		var titleWidth = 600f;
-		var titleHeight = 60f;
-		var titleX = ((float)slideSize.Width - titleWidth) / 2;
-		var titleY = 50f;
+		foreach (IShape shape in slide.Shapes)
+		{
+			if (shape is IAutoShape autoShape && autoShape.Placeholder != null && autoShape.Placeholder.Type == PlaceholderType.Title)
+			{
+				autoShape.TextFrame.Text = "название таблицы";
+				break;
+			}
+		}
 		
-		var titleBox = slide.Shapes.AddAutoShape(ShapeType.Rectangle, titleX, titleY, titleWidth, titleHeight);
-		titleBox.FillFormat.FillType = FillType.NoFill;
-		titleBox.LineFormat.FillFormat.FillType = FillType.NoFill;
-		titleBox.TextFrame.Text = "название таблицы";
-		titleBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
-		var titlePortion = titleBox.TextFrame.Paragraphs[0].Portions[0];
-		titlePortion.PortionFormat.FontHeight = 32;
-		titlePortion.PortionFormat.FillFormat.FillType = FillType.Solid;
-		titlePortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
+		var tableMarginCm = 2.0;
+		var tableMarginPoints = tableMarginCm * 28.35;
+		var tableWidth = (float)slideSize.Width - (float)tableMarginPoints;
+		var columnWidth = tableWidth / 5;
 		
-		var tableX = ((float)slideSize.Width - 900) / 2;
-		var tableY = titleY + titleHeight + 40f;
+		var tableX = ((float)slideSize.Width - tableWidth) / 2;
+		var tableY = 150f;
 		
-		double[] columnWidths = { 180, 180, 180, 180, 180 };
+		double[] columnWidths = { columnWidth, columnWidth, columnWidth, columnWidth, columnWidth };
 		double[] rowHeights = { 50, 50, 50, 50, 50 };
 		
 		var table = slide.Shapes.AddTable(tableX, tableY, columnWidths, rowHeights);
