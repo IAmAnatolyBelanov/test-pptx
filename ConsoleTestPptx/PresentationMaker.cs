@@ -60,7 +60,7 @@ public class PresentationMaker
 		AddLineChartSlide(30, 8);
 		AddLineChartSlide(2, 30);
 		AddLineChartSlide(30, 40);
-		AddAreaChartSlide();
+		AddAreaChartSlide(3, 5);
 		AddScatterChartSlide();
 		AddCombinedChartSlide();
 		var filename = await CreateFilename();
@@ -446,7 +446,7 @@ public class PresentationMaker
 		chart.ChartTitle.AddTextFrameForOverriding("Динамика роста");
 	}
 
-	private void AddAreaChartSlide()
+	private void AddAreaChartSlide(int regionsCount, int yearsCount)
 	{
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
@@ -464,33 +464,47 @@ public class PresentationMaker
 		chart.ChartData.Series.Clear();
 		chart.ChartData.Categories.Clear();
 		
-		var categories = new[] { "2020", "2021", "2022", "2023", "2024" };
-		var values1 = new[] { 150.0, 180.0, 220.0, 260.0, 300.0 };
-		var values2 = new[] { 120.0, 140.0, 170.0, 200.0, 240.0 };
-		var values3 = new[] { 100.0, 115.0, 135.0, 160.0, 190.0 };
+		var baseYear = 2020;
+		var categories = new string[yearsCount];
+		for (int i = 0; i < yearsCount; i++)
+		{
+			categories[i] = (baseYear + i).ToString();
+		}
 		
 		for (int i = 0; i < categories.Length; i++)
 		{
 			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
 		}
 		
-		var series1 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Регион 1"), chart.Type);
-		var series2 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 2, "Регион 2"), chart.Type);
-		var series3 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 3, "Регион 3"), chart.Type);
-		
-		for (int i = 0; i < values1.Length; i++)
+		var colors = new[]
 		{
-			series1.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, i + 1, 1, values1[i]));
-			series2.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
-			series3.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, i + 1, 3, values3[i]));
-		}
+			System.Drawing.Color.FromArgb(68, 114, 196),
+			System.Drawing.Color.FromArgb(237, 125, 49),
+			System.Drawing.Color.FromArgb(112, 173, 71),
+			System.Drawing.Color.FromArgb(255, 192, 0),
+			System.Drawing.Color.FromArgb(192, 0, 0),
+			System.Drawing.Color.FromArgb(112, 48, 160),
+			System.Drawing.Color.FromArgb(0, 176, 240)
+		};
 		
-		series1.Format.Fill.FillType = FillType.Solid;
-		series1.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
-		series2.Format.Fill.FillType = FillType.Solid;
-		series2.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(237, 125, 49);
-		series3.Format.Fill.FillType = FillType.Solid;
-		series3.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(112, 173, 71);
+		var random = new Random();
+		
+		for (int regionIndex = 0; regionIndex < regionsCount; regionIndex++)
+		{
+			var regionName = $"Регион {regionIndex + 1}";
+			var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, regionIndex + 1, regionName), chart.Type);
+			
+			var baseValue = random.Next(100, 200);
+			for (int yearIndex = 0; yearIndex < yearsCount; yearIndex++)
+			{
+				var value = baseValue + random.Next(-20, 50) * (yearIndex + 1);
+				if (value < 0) value = 0;
+				series.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, yearIndex + 1, regionIndex + 1, (double)value));
+			}
+			
+			series.Format.Fill.FillType = FillType.Solid;
+			series.Format.Fill.SolidFillColor.Color = colors[regionIndex % colors.Length];
+		}
 		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Продажи по регионам");
