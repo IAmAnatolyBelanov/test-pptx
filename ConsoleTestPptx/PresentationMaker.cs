@@ -64,7 +64,26 @@ public class PresentationMaker
 		AddAreaChartSlide(30, 5);
 		AddAreaChartSlide(3, 30);
 		AddAreaChartSlide(30, 40);
-		AddScatterChartSlide();
+		AddScatterChartSlide(new List<ScatterData>
+		{
+			new ScatterData
+			{
+				Name = "Зависимость",
+				DataPoints = new List<KeyValuePair<float, float>>
+				{
+					new KeyValuePair<float, float>(1.0f, 2.5f),
+					new KeyValuePair<float, float>(2.0f, 5.1f),
+					new KeyValuePair<float, float>(3.0f, 7.8f),
+					new KeyValuePair<float, float>(4.0f, 10.2f),
+					new KeyValuePair<float, float>(5.0f, 12.9f),
+					new KeyValuePair<float, float>(6.0f, 15.3f),
+					new KeyValuePair<float, float>(7.0f, 18.1f),
+					new KeyValuePair<float, float>(8.0f, 20.5f),
+					new KeyValuePair<float, float>(9.0f, 23.2f),
+					new KeyValuePair<float, float>(10.0f, 25.8f)
+				}
+			}
+		});
 		AddCombinedChartSlide();
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
@@ -513,7 +532,7 @@ public class PresentationMaker
 		chart.ChartTitle.AddTextFrameForOverriding("Продажи по регионам");
 	}
 
-	private void AddScatterChartSlide()
+	private void AddScatterChartSlide(List<ScatterData> scatterDataList)
 	{
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
@@ -530,20 +549,35 @@ public class PresentationMaker
 		
 		chart.ChartData.Series.Clear();
 		
-		var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Зависимость"), chart.Type);
-		
-		var xValues = new[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
-		var yValues = new[] { 2.5, 5.1, 7.8, 10.2, 12.9, 15.3, 18.1, 20.5, 23.2, 25.8 };
-		
-		for (int i = 0; i < xValues.Length; i++)
+		var colors = new[]
 		{
-			series.DataPoints.AddDataPointForScatterSeries(
-				workbook.GetCell(0, i + 1, 1, xValues[i]),
-				workbook.GetCell(0, i + 1, 2, yValues[i]));
-		}
+			System.Drawing.Color.FromArgb(68, 114, 196),
+			System.Drawing.Color.FromArgb(237, 125, 49),
+			System.Drawing.Color.FromArgb(112, 173, 71),
+			System.Drawing.Color.FromArgb(255, 192, 0),
+			System.Drawing.Color.FromArgb(192, 0, 0),
+			System.Drawing.Color.FromArgb(112, 48, 160),
+			System.Drawing.Color.FromArgb(0, 176, 240)
+		};
 		
-		series.Format.Line.FillFormat.FillType = FillType.Solid;
-		series.Format.Line.FillFormat.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
+		for (int seriesIndex = 0; seriesIndex < scatterDataList.Count; seriesIndex++)
+		{
+			var scatterData = scatterDataList[seriesIndex];
+			var xColumn = seriesIndex * 2 + 1;
+			var yColumn = seriesIndex * 2 + 2;
+			var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, xColumn, scatterData.Name), chart.Type);
+			
+			for (int i = 0; i < scatterData.DataPoints.Count; i++)
+			{
+				var point = scatterData.DataPoints[i];
+				series.DataPoints.AddDataPointForScatterSeries(
+					workbook.GetCell(0, i + 1, xColumn, (double)point.Key),
+					workbook.GetCell(0, i + 1, yColumn, (double)point.Value));
+			}
+			
+			series.Format.Line.FillFormat.FillType = FillType.Solid;
+			series.Format.Line.FillFormat.SolidFillColor.Color = colors[seriesIndex % colors.Length];
+		}
 		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Корреляция показателей");
