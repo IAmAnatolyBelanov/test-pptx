@@ -759,5 +759,18 @@ public class PresentationMaker
 		var imageY = 150f;
 		
 		slide.Shapes.AddPictureFrame(ShapeType.Rectangle, imageX, imageY, imageWidth, imageHeight, image);
+		
+		var secondImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwy9nmK2r4SpkQgauEOGuITWSFHDxD3j47Ow&s";
+		var secondImageBytes = await httpClient.GetByteArrayAsync(secondImageUrl);
+		
+		using var secondImageStream = new MemoryStream(secondImageBytes);
+		var secondImage = _presentationScope.Presentation.Images.AddImage(secondImageStream);
+		
+		var secondImageWidth = 300f;
+		var secondImageHeight = 400f;
+		var secondImageX = (float)slideSize.Width - secondImageWidth;
+		var secondImageY = 0f;
+		
+		slide.Shapes.AddPictureFrame(ShapeType.Rectangle, secondImageX, secondImageY, secondImageWidth, secondImageHeight, secondImage);
 	}
 }
