@@ -84,6 +84,19 @@ public class PresentationMaker
 				}
 			}
 		});
+		var random = new Random();
+		var commonXValues = new[] { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
+		var scatterDataList = new List<ScatterData>();
+		for (int i = 0; i < 4; i++)
+		{
+			var dataPoints = commonXValues.Select(x => new KeyValuePair<float, float>(x, (float)random.NextDouble() * 30f)).ToList();
+			scatterDataList.Add(new ScatterData
+			{
+				Name = $"Серия {i + 1}",
+				DataPoints = dataPoints
+			});
+		}
+		AddScatterChartSlide(scatterDataList);
 		AddCombinedChartSlide();
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
