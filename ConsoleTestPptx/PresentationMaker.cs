@@ -18,7 +18,7 @@ public class PresentationMaker
 		FormatFirstSlide();
 		AddTableSlide(4);
 		AddTableSlide(20);
-		AddColumnChartSlide();
+		AddColumnChartSlide(2, 6);
 		AddPieChartSlide();
 		AddLineChartSlide();
 		AddAreaChartSlide();
@@ -213,7 +213,7 @@ public class PresentationMaker
 		return filename;
 	}
 
-	private void AddColumnChartSlide()
+	private void AddColumnChartSlide(int yearsCount, int monthsCount)
 	{
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
@@ -231,28 +231,45 @@ public class PresentationMaker
 		chart.ChartData.Series.Clear();
 		chart.ChartData.Categories.Clear();
 		
-		var categories = new[] { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь" };
-		var values1 = new[] { 45.0, 52.0, 38.0, 61.0, 55.0, 48.0 };
-		var values2 = new[] { 38.0, 44.0, 42.0, 55.0, 50.0, 43.0 };
+		var monthNames = new[] { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
+		var categories = new string[monthsCount];
+		for (int i = 0; i < monthsCount; i++)
+		{
+			categories[i] = monthNames[i % 12];
+		}
 		
 		for (int i = 0; i < categories.Length; i++)
 		{
 			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
 		}
 		
-		var series1 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Продажи 2023"), chart.Type);
-		var series2 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 2, "Продажи 2024"), chart.Type);
-		
-		for (int i = 0; i < values1.Length; i++)
+		var baseYear = 2023;
+		var seriesList = new List<IChartSeries>();
+		var colors = new[]
 		{
-			series1.DataPoints.AddDataPointForBarSeries(workbook.GetCell(0, i + 1, 1, values1[i]));
-			series2.DataPoints.AddDataPointForBarSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
-		}
+			System.Drawing.Color.FromArgb(68, 114, 196),
+			System.Drawing.Color.FromArgb(237, 125, 49),
+			System.Drawing.Color.FromArgb(112, 173, 71),
+			System.Drawing.Color.FromArgb(255, 192, 0),
+			System.Drawing.Color.FromArgb(192, 0, 0)
+		};
 		
-		series1.Format.Fill.FillType = FillType.Solid;
-		series1.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
-		series2.Format.Fill.FillType = FillType.Solid;
-		series2.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(237, 125, 49);
+		for (int yearIndex = 0; yearIndex < yearsCount; yearIndex++)
+		{
+			var year = baseYear + yearIndex;
+			var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, yearIndex + 1, $"Продажи {year}"), chart.Type);
+			seriesList.Add(series);
+			
+			var random = new Random(year);
+			for (int monthIndex = 0; monthIndex < monthsCount; monthIndex++)
+			{
+				var value = random.Next(30, 70);
+				series.DataPoints.AddDataPointForBarSeries(workbook.GetCell(0, monthIndex + 1, yearIndex + 1, (double)value));
+			}
+			
+			series.Format.Fill.FillType = FillType.Solid;
+			series.Format.Fill.SolidFillColor.Color = colors[yearIndex % colors.Length];
+		}
 		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Продажи по месяцам");
