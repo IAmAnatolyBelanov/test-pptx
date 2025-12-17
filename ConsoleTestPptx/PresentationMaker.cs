@@ -1,6 +1,7 @@
 using Aspose.Slides;
 using Aspose.Slides.Charts;
 using Aspose.Slides.Export;
+using System.Net.Http;
 
 namespace ConsoleTestPptx;
 
@@ -124,6 +125,7 @@ public class PresentationMaker
 		}
 		AddScatterChartSlide(scatterDataList3);
 		AddCombinedChartSlide();
+		await AddImageSlide("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY-ahEHLQQxPvKv3xC36gCwkjGsEgidsIdIw&s");
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
 	}
@@ -735,5 +737,27 @@ public class PresentationMaker
 	private async Task SavePresentation(string filename)
 	{
 		_presentationScope.Presentation.Save(filename, SaveFormat.Pptx);
+	}
+
+	private async Task AddImageSlide(string imageUrl)
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		SetSlideTitle(slide, "Изображение");
+		
+		using var httpClient = new HttpClient();
+		var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
+		
+		using var imageStream = new MemoryStream(imageBytes);
+		var image = _presentationScope.Presentation.Images.AddImage(imageStream);
+		
+		var imageMargin = 50f;
+		var imageWidth = (float)slideSize.Width - imageMargin * 2;
+		var imageHeight = (float)slideSize.Height - 200f;
+		var imageX = imageMargin;
+		var imageY = 150f;
+		
+		slide.Shapes.AddPictureFrame(ShapeType.Rectangle, imageX, imageY, imageWidth, imageHeight, image);
 	}
 }
