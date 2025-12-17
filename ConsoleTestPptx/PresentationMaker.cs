@@ -40,6 +40,7 @@ public class PresentationMaker
 		textBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
 		var portion = textBox.TextFrame.Paragraphs[0].Portions[0];
 		portion.PortionFormat.FontHeight = 48;
+		portion.PortionFormat.LatinFont = new FontData("Calibri");
 		portion.PortionFormat.FillFormat.FillType = FillType.Solid;
 		portion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
 
@@ -56,6 +57,7 @@ public class PresentationMaker
 		secondTextBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
 		var secondPortion = secondTextBox.TextFrame.Paragraphs[0].Portions[0];
 		secondPortion.PortionFormat.FontHeight = 36;
+		secondPortion.PortionFormat.LatinFont = new FontData("Times New Roman");
 		secondPortion.PortionFormat.FillFormat.FillType = FillType.Solid;
 		secondPortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Purple;
 
@@ -72,6 +74,7 @@ public class PresentationMaker
 		thirdTextBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Left;
 		var thirdPortion = thirdTextBox.TextFrame.Paragraphs[0].Portions[0];
 		thirdPortion.PortionFormat.FontHeight = 36;
+		thirdPortion.PortionFormat.LatinFont = new FontData("Arial");
 		thirdPortion.PortionFormat.FillFormat.FillType = FillType.Solid;
 		thirdPortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
 	}
