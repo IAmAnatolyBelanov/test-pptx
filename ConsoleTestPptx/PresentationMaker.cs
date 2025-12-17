@@ -110,6 +110,19 @@ public class PresentationMaker
 			});
 		}
 		AddScatterChartSlide(scatterDataList2);
+		var random3 = new Random(100);
+		var commonXValues40 = Enumerable.Range(1, 40).Select(x => (float)x).ToArray();
+		var scatterDataList3 = new List<ScatterData>();
+		for (int i = 0; i < 9; i++)
+		{
+			var dataPoints = commonXValues40.Select(x => new KeyValuePair<float, float>(x, (float)random3.NextDouble() * 60f)).ToList();
+			scatterDataList3.Add(new ScatterData
+			{
+				Name = $"Набор {i + 1}",
+				DataPoints = dataPoints
+			});
+		}
+		AddScatterChartSlide(scatterDataList3);
 		AddCombinedChartSlide();
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
