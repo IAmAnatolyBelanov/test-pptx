@@ -15,6 +15,7 @@ public class PresentationMaker
 	public async Task BuildPresentation()
 	{
 		FormatFirstSlide();
+		AddTableSlide();
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
 	}
@@ -72,6 +73,70 @@ public class PresentationMaker
 		thirdPortion.PortionFormat.FontHeight = 36;
 		thirdPortion.PortionFormat.FillFormat.FillType = FillType.Solid;
 		thirdPortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
+	}
+
+	private void AddTableSlide()
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		var titleWidth = 600f;
+		var titleHeight = 60f;
+		var titleX = ((float)slideSize.Width - titleWidth) / 2;
+		var titleY = 50f;
+		
+		var titleBox = slide.Shapes.AddAutoShape(ShapeType.Rectangle, titleX, titleY, titleWidth, titleHeight);
+		titleBox.FillFormat.FillType = FillType.NoFill;
+		titleBox.LineFormat.FillFormat.FillType = FillType.NoFill;
+		titleBox.TextFrame.Text = "название таблицы";
+		titleBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
+		var titlePortion = titleBox.TextFrame.Paragraphs[0].Portions[0];
+		titlePortion.PortionFormat.FontHeight = 32;
+		titlePortion.PortionFormat.FillFormat.FillType = FillType.Solid;
+		titlePortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
+		
+		var tableWidth = 900f;
+		var tableHeight = 300f;
+		var tableX = ((float)slideSize.Width - tableWidth) / 2;
+		var tableY = titleY + titleHeight + 40f;
+		
+		var table = slide.Shapes.AddTable(tableX, tableY, tableWidth, tableHeight, 5, 5);
+		
+		var headerRow = table.Rows[0];
+		headerRow[0].TextFrame.Text = "Текст";
+		headerRow[1].TextFrame.Text = "Дата и время";
+		headerRow[2].TextFrame.Text = "Число 1";
+		headerRow[3].TextFrame.Text = "Число 2";
+		headerRow[4].TextFrame.Text = "Число 3";
+		
+		for (int col = 0; col < 5; col++)
+		{
+			var cell = headerRow[col];
+			cell.FillFormat.FillType = FillType.Solid;
+			cell.FillFormat.SolidFillColor.Color = System.Drawing.Color.LightGray;
+			cell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
+			var portion = cell.TextFrame.Paragraphs[0].Portions[0];
+			portion.PortionFormat.FontHeight = 14;
+			portion.PortionFormat.FontBold = NullableBool.True;
+		}
+		
+		for (int row = 1; row < 5; row++)
+		{
+			var dataRow = table.Rows[row];
+			dataRow[0].TextFrame.Text = $"Текст {row}";
+			dataRow[1].TextFrame.Text = DateTime.Now.AddDays(row).ToString("dd.MM.yyyy HH:mm");
+			dataRow[2].TextFrame.Text = (row * 10).ToString();
+			dataRow[3].TextFrame.Text = (row * 20).ToString();
+			dataRow[4].TextFrame.Text = (row * 30).ToString();
+			
+			for (int col = 0; col < 5; col++)
+			{
+				var cell = dataRow[col];
+				cell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = col == 0 ? TextAlignment.Left : TextAlignment.Center;
+				var portion = cell.TextFrame.Paragraphs[0].Portions[0];
+				portion.PortionFormat.FontHeight = 12;
+			}
+		}
 	}
 
 	private async Task<string> CreateFilename()
