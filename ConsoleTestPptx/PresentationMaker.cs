@@ -95,12 +95,13 @@ public class PresentationMaker
 		titlePortion.PortionFormat.FillFormat.FillType = FillType.Solid;
 		titlePortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
 		
-		var tableWidth = 900f;
-		var tableHeight = 300f;
-		var tableX = ((float)slideSize.Width - tableWidth) / 2;
+		var tableX = ((float)slideSize.Width - 900) / 2;
 		var tableY = titleY + titleHeight + 40f;
 		
-		var table = slide.Shapes.AddTable(tableX, tableY, tableWidth, tableHeight, 5, 5);
+		double[] columnWidths = { 180, 180, 180, 180, 180 };
+		double[] rowHeights = { 50, 50, 50, 50, 50 };
+		
+		var table = slide.Shapes.AddTable(tableX, tableY, columnWidths, rowHeights);
 		
 		var headerRow = table.Rows[0];
 		headerRow[0].TextFrame.Text = "Текст";
@@ -112,8 +113,8 @@ public class PresentationMaker
 		for (int col = 0; col < 5; col++)
 		{
 			var cell = headerRow[col];
-			cell.FillFormat.FillType = FillType.Solid;
-			cell.FillFormat.SolidFillColor.Color = System.Drawing.Color.LightGray;
+			cell.CellFormat.FillFormat.FillType = FillType.Solid;
+			cell.CellFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.LightGray;
 			cell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
 			var portion = cell.TextFrame.Paragraphs[0].Portions[0];
 			portion.PortionFormat.FontHeight = 14;
