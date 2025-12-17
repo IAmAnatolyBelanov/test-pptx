@@ -22,7 +22,14 @@ public class PresentationMaker
 		AddColumnChartSlide(8, 6);
 		AddColumnChartSlide(2, 30);
 		AddColumnChartSlide(8, 30);
-		AddPieChartSlide();
+		AddPieChartSlide(new Dictionary<string, int> 
+		{ 
+			{ "Продукты", 35 }, 
+			{ "Услуги", 25 }, 
+			{ "Консалтинг", 20 }, 
+			{ "Поддержка", 15 }, 
+			{ "Другое", 5 } 
+		});
 		AddLineChartSlide();
 		AddAreaChartSlide();
 		AddScatterChartSlide();
@@ -278,8 +285,19 @@ public class PresentationMaker
 		chart.ChartTitle.AddTextFrameForOverriding("Продажи по месяцам");
 	}
 
-	private void AddPieChartSlide()
+	private void AddPieChartSlide(IReadOnlyDictionary<string, int> data)
 	{
+		var colors = new[]
+		{
+			System.Drawing.Color.FromArgb(68, 114, 196),
+			System.Drawing.Color.FromArgb(237, 125, 49),
+			System.Drawing.Color.FromArgb(112, 173, 71),
+			System.Drawing.Color.FromArgb(255, 192, 0),
+			System.Drawing.Color.FromArgb(192, 0, 0),
+			System.Drawing.Color.FromArgb(112, 48, 160),
+			System.Drawing.Color.FromArgb(0, 176, 240)
+		};
+
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
 		
@@ -296,30 +314,19 @@ public class PresentationMaker
 		chart.ChartData.Series.Clear();
 		chart.ChartData.Categories.Clear();
 		
-		var categories = new[] { "Продукты", "Услуги", "Консалтинг", "Поддержка", "Другое" };
-		var values = new[] { 35.0, 25.0, 20.0, 15.0, 5.0 };
-		
-		for (int i = 0; i < categories.Length; i++)
+		var items = data.ToList();
+		for (int i = 0; i < items.Count; i++)
 		{
-			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
+			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, items[i].Key));
 		}
 		
 		var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Доходы"), chart.Type);
 		
-		var pieColors = new[]
+		for (int i = 0; i < items.Count; i++)
 		{
-			System.Drawing.Color.FromArgb(68, 114, 196),
-			System.Drawing.Color.FromArgb(237, 125, 49),
-			System.Drawing.Color.FromArgb(112, 173, 71),
-			System.Drawing.Color.FromArgb(255, 192, 0),
-			System.Drawing.Color.FromArgb(192, 0, 0)
-		};
-		
-		for (int i = 0; i < values.Length; i++)
-		{
-			var dataPoint = series.DataPoints.AddDataPointForPieSeries(workbook.GetCell(0, i + 1, 1, values[i]));
+			var dataPoint = series.DataPoints.AddDataPointForPieSeries(workbook.GetCell(0, i + 1, 1, (double)items[i].Value));
 			dataPoint.Format.Fill.FillType = FillType.Solid;
-			dataPoint.Format.Fill.SolidFillColor.Color = pieColors[i];
+			dataPoint.Format.Fill.SolidFillColor.Color = colors[i % colors.Length];
 		}
 		
 		chart.HasTitle = true;
