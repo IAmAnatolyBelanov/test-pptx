@@ -2,6 +2,8 @@ using Aspose.Slides;
 using Aspose.Slides.Charts;
 using Aspose.Slides.Export;
 using System.Net.Http;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace ConsoleTestPptx;
 
@@ -749,8 +751,8 @@ public class PresentationMaker
 		using var httpClient = new HttpClient();
 		var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
 		
-		using var imageStream = new MemoryStream(imageBytes);
-		var image = _presentationScope.Presentation.Images.AddImage(imageStream);
+		using var originalImageStream = new MemoryStream(imageBytes);
+		using var bitmap = new Bitmap(originalImageStream);
 		
 		var imageMargin = 50f;
 		var imageWidth = (float)slideSize.Width - imageMargin * 2;
@@ -758,19 +760,63 @@ public class PresentationMaker
 		var imageX = imageMargin;
 		var imageY = 150f;
 		
-		slide.Shapes.AddPictureFrame(ShapeType.Rectangle, imageX, imageY, imageWidth, imageHeight, image);
+		using (var pngStream = new MemoryStream())
+		{
+			bitmap.Save(pngStream, System.Drawing.Imaging.ImageFormat.Png);
+			pngStream.Position = 0;
+			var pngImage = _presentationScope.Presentation.Images.AddImage(pngStream);
+			slide.Shapes.AddPictureFrame(ShapeType.Rectangle, imageX, imageY, imageWidth, imageHeight, pngImage);
+		}
+		
+		using (var jpgStream = new MemoryStream())
+		{
+			bitmap.Save(jpgStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+			jpgStream.Position = 0;
+			var jpgImage = _presentationScope.Presentation.Images.AddImage(jpgStream);
+			slide.Shapes.AddPictureFrame(ShapeType.Rectangle, imageX, imageY, imageWidth, imageHeight, jpgImage);
+		}
+		
+		using (var gifStream = new MemoryStream())
+		{
+			bitmap.Save(gifStream, System.Drawing.Imaging.ImageFormat.Gif);
+			gifStream.Position = 0;
+			var gifImage = _presentationScope.Presentation.Images.AddImage(gifStream);
+			slide.Shapes.AddPictureFrame(ShapeType.Rectangle, imageX, imageY, imageWidth, imageHeight, gifImage);
+		}
 		
 		var secondImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwy9nmK2r4SpkQgauEOGuITWSFHDxD3j47Ow&s";
 		var secondImageBytes = await httpClient.GetByteArrayAsync(secondImageUrl);
 		
-		using var secondImageStream = new MemoryStream(secondImageBytes);
-		var secondImage = _presentationScope.Presentation.Images.AddImage(secondImageStream);
+		using var secondOriginalImageStream = new MemoryStream(secondImageBytes);
+		using var secondBitmap = new Bitmap(secondOriginalImageStream);
 		
 		var secondImageWidth = 300f;
 		var secondImageHeight = 400f;
 		var secondImageX = (float)slideSize.Width - secondImageWidth;
 		var secondImageY = 0f;
 		
-		slide.Shapes.AddPictureFrame(ShapeType.Rectangle, secondImageX, secondImageY, secondImageWidth, secondImageHeight, secondImage);
+		using (var secondPngStream = new MemoryStream())
+		{
+			secondBitmap.Save(secondPngStream, System.Drawing.Imaging.ImageFormat.Png);
+			secondPngStream.Position = 0;
+			var secondPngImage = _presentationScope.Presentation.Images.AddImage(secondPngStream);
+			slide.Shapes.AddPictureFrame(ShapeType.Rectangle, secondImageX, secondImageY, secondImageWidth, secondImageHeight, secondPngImage);
+		}
+		
+		using (var secondJpgStream = new MemoryStream())
+		{
+			secondBitmap.Save(secondJpgStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+			secondJpgStream.Position = 0;
+			var secondJpgImage = _presentationScope.Presentation.Images.AddImage(secondJpgStream);
+			slide.Shapes.AddPictureFrame(ShapeType.Rectangle, secondImageX, secondImageY, secondImageWidth, secondImageHeight, secondJpgImage);
+		}
+		
+		using (var secondGifStream = new MemoryStream())
+		{
+			secondBitmap.Save(secondGifStream, System.Drawing.Imaging.ImageFormat.Gif);
+			secondGifStream.Position = 0;
+			var secondGifImage = _presentationScope.Presentation.Images.AddImage(secondGifStream);
+			slide.Shapes.AddPictureFrame(ShapeType.Rectangle, secondImageX, secondImageY, secondImageWidth, secondImageHeight, secondGifImage);
+		}
 	}
 }

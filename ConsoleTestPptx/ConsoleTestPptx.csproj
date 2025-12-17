@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Aspose.Drawing" Version="25.12.0" />
       <PackageReference Include="Aspose.Slides.NET" Version="25.12.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
+      <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
     </ItemGroup>
 
 </Project>
