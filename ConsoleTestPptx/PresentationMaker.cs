@@ -249,7 +249,7 @@ public class PresentationMaker
 		}
 		
 		chart.HasTitle = true;
-		chart.ChartTitle.TextFrameForOverriding.Text = "Продажи по месяцам";
+		chart.ChartTitle.AddTextFrameForOverriding("Продажи по месяцам");
 	}
 
 	private void AddPieChartSlide()
@@ -286,7 +286,7 @@ public class PresentationMaker
 		}
 		
 		chart.HasTitle = true;
-		chart.ChartTitle.TextFrameForOverriding.Text = "Структура доходов";
+		chart.ChartTitle.AddTextFrameForOverriding("Структура доходов");
 	}
 
 	private void AddLineChartSlide()
@@ -326,7 +326,7 @@ public class PresentationMaker
 		}
 		
 		chart.HasTitle = true;
-		chart.ChartTitle.TextFrameForOverriding.Text = "Динамика роста";
+		chart.ChartTitle.AddTextFrameForOverriding("Динамика роста");
 	}
 
 	private void AddAreaChartSlide()
@@ -369,7 +369,7 @@ public class PresentationMaker
 		}
 		
 		chart.HasTitle = true;
-		chart.ChartTitle.TextFrameForOverriding.Text = "Продажи по регионам";
+		chart.ChartTitle.AddTextFrameForOverriding("Продажи по регионам");
 	}
 
 	private void AddScatterChartSlide()
@@ -402,7 +402,7 @@ public class PresentationMaker
 		}
 		
 		chart.HasTitle = true;
-		chart.ChartTitle.TextFrameForOverriding.Text = "Корреляция показателей";
+		chart.ChartTitle.AddTextFrameForOverriding("Корреляция показателей");
 	}
 
 	private void SetSlideTitle(ISlide slide, string title)
