@@ -56,7 +56,7 @@ public class PresentationMaker
 			{ "Поддержка3", 15 }, 
 			{ "Другое3", 5 } 
 		});
-		AddLineChartSlide();
+		AddLineChartSlide(2, 8);
 		AddAreaChartSlide();
 		AddScatterChartSlide();
 		AddCombinedChartSlide();
@@ -380,7 +380,7 @@ public class PresentationMaker
 		chart.ChartTitle.AddTextFrameForOverriding("Структура доходов");
 	}
 
-	private void AddLineChartSlide()
+	private void AddLineChartSlide(int companiesCount, int quartersCount)
 	{
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
@@ -398,29 +398,46 @@ public class PresentationMaker
 		chart.ChartData.Series.Clear();
 		chart.ChartData.Categories.Clear();
 		
-		var categories = new[] { "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8" };
-		var values1 = new[] { 120.0, 135.0, 145.0, 160.0, 175.0, 190.0, 205.0, 220.0 };
-		var values2 = new[] { 100.0, 115.0, 125.0, 140.0, 155.0, 170.0, 185.0, 200.0 };
+		var categories = new string[quartersCount];
+		for (int i = 0; i < quartersCount; i++)
+		{
+			categories[i] = $"Q{i + 1}";
+		}
 		
 		for (int i = 0; i < categories.Length; i++)
 		{
 			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
 		}
 		
-		var series1 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Компания A"), chart.Type);
-		var series2 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 2, "Компания B"), chart.Type);
-		
-		for (int i = 0; i < values1.Length; i++)
+		var colors = new[]
 		{
-			series1.DataPoints.AddDataPointForLineSeries(workbook.GetCell(0, i + 1, 1, values1[i]));
-			series2.DataPoints.AddDataPointForLineSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
+			System.Drawing.Color.FromArgb(68, 114, 196),
+			System.Drawing.Color.FromArgb(237, 125, 49),
+			System.Drawing.Color.FromArgb(112, 173, 71),
+			System.Drawing.Color.FromArgb(255, 192, 0),
+			System.Drawing.Color.FromArgb(192, 0, 0),
+			System.Drawing.Color.FromArgb(112, 48, 160),
+			System.Drawing.Color.FromArgb(0, 176, 240)
+		};
+		
+		var random = new Random();
+		
+		for (int companyIndex = 0; companyIndex < companiesCount; companyIndex++)
+		{
+			var companyName = $"Компания {(char)('A' + companyIndex)}";
+			var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, companyIndex + 1, companyName), chart.Type);
+			
+			var baseValue = random.Next(80, 150);
+			for (int quarterIndex = 0; quarterIndex < quartersCount; quarterIndex++)
+			{
+				var value = baseValue + random.Next(-20, 30) * (quarterIndex + 1);
+				if (value < 0) value = 0;
+				series.DataPoints.AddDataPointForLineSeries(workbook.GetCell(0, quarterIndex + 1, companyIndex + 1, (double)value));
+			}
+			
+			series.Format.Line.FillFormat.FillType = FillType.Solid;
+			series.Format.Line.FillFormat.SolidFillColor.Color = colors[companyIndex % colors.Length];
 		}
-		
-		series1.Format.Line.FillFormat.FillType = FillType.Solid;
-		series1.Format.Line.FillFormat.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
-		
-		series2.Format.Line.FillFormat.FillType = FillType.Solid;
-		series2.Format.Line.FillFormat.SolidFillColor.Color = System.Drawing.Color.FromArgb(237, 125, 49);
 		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Динамика роста");
