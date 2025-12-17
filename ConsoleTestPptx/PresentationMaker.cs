@@ -26,15 +26,17 @@ public class PresentationMaker
 			: _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
-		var textBox = slide.Shapes.AddTextBox(ShapeType.Rectangle, 0, 0, (float)slideSize.Width, (float)slideSize.Height);
+		var textWidth = 600f;
+		var textHeight = 100f;
+		var x = ((float)slideSize.Width - textWidth) / 2;
+		var y = ((float)slideSize.Height - textHeight) / 2;
+		
+		var textBox = slide.Shapes.AddAutoShape(ShapeType.Rectangle, x, y, textWidth, textHeight);
+		textBox.FillFormat.FillType = FillType.NoFill;
+		textBox.LineFormat.FillFormat.FillType = FillType.NoFill;
 		textBox.TextFrame.Text = "Тестовый тайтл";
 		textBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
 		textBox.TextFrame.Paragraphs[0].Portions[0].PortionFormat.FontHeight = 48;
-		
-		var textFrame = textBox.TextFrame;
-		textFrame.AnchoringType = TextAnchorType.Center;
-		textFrame.VerticalAnchorType = TextVerticalType.Center;
-		textFrame.AutofitType = TextAutofitType.None;
 	}
 
 	private async Task<string> CreateFilename()
