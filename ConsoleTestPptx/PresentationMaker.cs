@@ -1,4 +1,5 @@
 using Aspose.Slides;
+using Aspose.Slides.Charts;
 using Aspose.Slides.Export;
 
 namespace ConsoleTestPptx;
@@ -17,6 +18,11 @@ public class PresentationMaker
 		FormatFirstSlide();
 		AddTableSlide(4);
 		AddTableSlide(20);
+		AddColumnChartSlide();
+		AddPieChartSlide();
+		AddLineChartSlide();
+		AddAreaChartSlide();
+		AddScatterChartSlide();
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
 	}
@@ -204,6 +210,233 @@ public class PresentationMaker
 		Directory.CreateDirectory(folder);
 		var filename = Path.Combine(folder, $"{DateTimeOffset.UtcNow:yyyyMMddhhmmss}.pptx");
 		return filename;
+	}
+
+	private void AddColumnChartSlide()
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		SetSlideTitle(slide, "Столбчатая диаграмма");
+		
+		var chartX = 50f;
+		var chartY = 150f;
+		var chartWidth = (float)slideSize.Width - chartX * 2;
+		var chartHeight = (float)slideSize.Height - chartY - 50f;
+		
+		var chart = slide.Shapes.AddChart(ChartType.ClusteredColumn, chartX, chartY, chartWidth, chartHeight);
+		var workbook = chart.ChartData.ChartDataWorkbook;
+		
+		chart.ChartData.Series.Clear();
+		chart.ChartData.Categories.Clear();
+		
+		var categories = new[] { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь" };
+		var values1 = new[] { 45.0, 52.0, 38.0, 61.0, 55.0, 48.0 };
+		var values2 = new[] { 38.0, 44.0, 42.0, 55.0, 50.0, 43.0 };
+		
+		for (int i = 0; i < categories.Length; i++)
+		{
+			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
+		}
+		
+		var series1 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Продажи 2023"), chart.Type);
+		var series2 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 2, "Продажи 2024"), chart.Type);
+		
+		for (int i = 0; i < values1.Length; i++)
+		{
+			series1.DataPoints.AddDataPointForBarSeries(workbook.GetCell(0, i + 1, 1, values1[i]));
+			series2.DataPoints.AddDataPointForBarSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
+		}
+		
+		chart.HasTitle = true;
+		chart.ChartTitle.TextFrameForOverriding.Text = "Продажи по месяцам";
+	}
+
+	private void AddPieChartSlide()
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		SetSlideTitle(slide, "Круговая диаграмма");
+		
+		var chartX = 50f;
+		var chartY = 150f;
+		var chartWidth = (float)slideSize.Width - chartX * 2;
+		var chartHeight = (float)slideSize.Height - chartY - 50f;
+		
+		var chart = slide.Shapes.AddChart(ChartType.Pie, chartX, chartY, chartWidth, chartHeight);
+		var workbook = chart.ChartData.ChartDataWorkbook;
+		
+		chart.ChartData.Series.Clear();
+		chart.ChartData.Categories.Clear();
+		
+		var categories = new[] { "Продукты", "Услуги", "Консалтинг", "Поддержка", "Другое" };
+		var values = new[] { 35.0, 25.0, 20.0, 15.0, 5.0 };
+		
+		for (int i = 0; i < categories.Length; i++)
+		{
+			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
+		}
+		
+		var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Доходы"), chart.Type);
+		
+		for (int i = 0; i < values.Length; i++)
+		{
+			series.DataPoints.AddDataPointForPieSeries(workbook.GetCell(0, i + 1, 1, values[i]));
+		}
+		
+		chart.HasTitle = true;
+		chart.ChartTitle.TextFrameForOverriding.Text = "Структура доходов";
+	}
+
+	private void AddLineChartSlide()
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		SetSlideTitle(slide, "Линейный график");
+		
+		var chartX = 50f;
+		var chartY = 150f;
+		var chartWidth = (float)slideSize.Width - chartX * 2;
+		var chartHeight = (float)slideSize.Height - chartY - 50f;
+		
+		var chart = slide.Shapes.AddChart(ChartType.LineWithMarkers, chartX, chartY, chartWidth, chartHeight);
+		var workbook = chart.ChartData.ChartDataWorkbook;
+		
+		chart.ChartData.Series.Clear();
+		chart.ChartData.Categories.Clear();
+		
+		var categories = new[] { "Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8" };
+		var values1 = new[] { 120.0, 135.0, 145.0, 160.0, 175.0, 190.0, 205.0, 220.0 };
+		var values2 = new[] { 100.0, 115.0, 125.0, 140.0, 155.0, 170.0, 185.0, 200.0 };
+		
+		for (int i = 0; i < categories.Length; i++)
+		{
+			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
+		}
+		
+		var series1 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Компания A"), chart.Type);
+		var series2 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 2, "Компания B"), chart.Type);
+		
+		for (int i = 0; i < values1.Length; i++)
+		{
+			series1.DataPoints.AddDataPointForLineSeries(workbook.GetCell(0, i + 1, 1, values1[i]));
+			series2.DataPoints.AddDataPointForLineSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
+		}
+		
+		chart.HasTitle = true;
+		chart.ChartTitle.TextFrameForOverriding.Text = "Динамика роста";
+	}
+
+	private void AddAreaChartSlide()
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		SetSlideTitle(slide, "Областная диаграмма");
+		
+		var chartX = 50f;
+		var chartY = 150f;
+		var chartWidth = (float)slideSize.Width - chartX * 2;
+		var chartHeight = (float)slideSize.Height - chartY - 50f;
+		
+		var chart = slide.Shapes.AddChart(ChartType.Area, chartX, chartY, chartWidth, chartHeight);
+		var workbook = chart.ChartData.ChartDataWorkbook;
+		
+		chart.ChartData.Series.Clear();
+		chart.ChartData.Categories.Clear();
+		
+		var categories = new[] { "2020", "2021", "2022", "2023", "2024" };
+		var values1 = new[] { 150.0, 180.0, 220.0, 260.0, 300.0 };
+		var values2 = new[] { 120.0, 140.0, 170.0, 200.0, 240.0 };
+		var values3 = new[] { 100.0, 115.0, 135.0, 160.0, 190.0 };
+		
+		for (int i = 0; i < categories.Length; i++)
+		{
+			chart.ChartData.Categories.Add(workbook.GetCell(0, i + 1, 0, categories[i]));
+		}
+		
+		var series1 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Регион 1"), chart.Type);
+		var series2 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 2, "Регион 2"), chart.Type);
+		var series3 = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 3, "Регион 3"), chart.Type);
+		
+		for (int i = 0; i < values1.Length; i++)
+		{
+			series1.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, i + 1, 1, values1[i]));
+			series2.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
+			series3.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, i + 1, 3, values3[i]));
+		}
+		
+		chart.HasTitle = true;
+		chart.ChartTitle.TextFrameForOverriding.Text = "Продажи по регионам";
+	}
+
+	private void AddScatterChartSlide()
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		SetSlideTitle(slide, "Точечная диаграмма");
+		
+		var chartX = 50f;
+		var chartY = 150f;
+		var chartWidth = (float)slideSize.Width - chartX * 2;
+		var chartHeight = (float)slideSize.Height - chartY - 50f;
+		
+		var chart = slide.Shapes.AddChart(ChartType.ScatterWithSmoothLinesAndMarkers, chartX, chartY, chartWidth, chartHeight);
+		var workbook = chart.ChartData.ChartDataWorkbook;
+		
+		chart.ChartData.Series.Clear();
+		
+		var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Зависимость"), chart.Type);
+		
+		var xValues = new[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
+		var yValues = new[] { 2.5, 5.1, 7.8, 10.2, 12.9, 15.3, 18.1, 20.5, 23.2, 25.8 };
+		
+		for (int i = 0; i < xValues.Length; i++)
+		{
+			series.DataPoints.AddDataPointForScatterSeries(
+				workbook.GetCell(0, i + 1, 1, xValues[i]),
+				workbook.GetCell(0, i + 1, 2, yValues[i]));
+		}
+		
+		chart.HasTitle = true;
+		chart.ChartTitle.TextFrameForOverriding.Text = "Корреляция показателей";
+	}
+
+	private void SetSlideTitle(ISlide slide, string title)
+	{
+		IAutoShape? titleShape = null;
+		foreach (IShape shape in slide.Shapes)
+		{
+			if (shape is IAutoShape autoShape && autoShape.TextFrame != null)
+			{
+				if (shape.Placeholder != null && 
+				    (shape.Placeholder.Type == PlaceholderType.Title || shape.Placeholder.Type == PlaceholderType.CenteredTitle))
+				{
+					titleShape = autoShape;
+					break;
+				}
+			}
+		}
+		
+		if (titleShape == null)
+		{
+			foreach (IShape shape in slide.Shapes)
+			{
+				if (shape is IAutoShape autoShape && autoShape.TextFrame != null && shape.Y < 200)
+				{
+					titleShape = autoShape;
+					break;
+				}
+			}
+		}
+		
+		if (titleShape != null)
+		{
+			titleShape.TextFrame.Text = title;
+		}
 	}
 
 	private async Task SavePresentation(string filename)
