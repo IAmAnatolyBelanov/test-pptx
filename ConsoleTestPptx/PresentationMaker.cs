@@ -23,6 +23,7 @@ public class PresentationMaker
 		AddLineChartSlide();
 		AddAreaChartSlide();
 		AddScatterChartSlide();
+		AddCombinedChartSlide();
 		var filename = await CreateFilename();
 		await SavePresentation(filename);
 	}
@@ -435,6 +436,82 @@ public class PresentationMaker
 		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Корреляция показателей");
+	}
+
+	private void AddCombinedChartSlide()
+	{
+		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
+		var slideSize = _presentationScope.Presentation.SlideSize.Size;
+		
+		SetSlideTitle(slide, "Сравнение диаграмм");
+		
+		var categories = new[] { "Продукт A", "Продукт B", "Продукт C", "Продукт D", "Продукт E" };
+		var values = new[] { 42.0, 28.0, 18.0, 8.0, 4.0 };
+		
+		var chartMargin = 50f;
+		var chartSpacing = 30f;
+		var chartWidth = ((float)slideSize.Width - chartMargin * 2 - chartSpacing) / 2;
+		var chartHeight = (float)slideSize.Height - 200f;
+		var chartY = 150f;
+		
+		var pieChartX = chartMargin;
+		var columnChartX = chartMargin + chartWidth + chartSpacing;
+		
+		var pieChart = slide.Shapes.AddChart(ChartType.Pie, pieChartX, chartY, chartWidth, chartHeight);
+		var pieWorkbook = pieChart.ChartData.ChartDataWorkbook;
+		
+		pieChart.ChartData.Series.Clear();
+		pieChart.ChartData.Categories.Clear();
+		
+		for (int i = 0; i < categories.Length; i++)
+		{
+			pieChart.ChartData.Categories.Add(pieWorkbook.GetCell(0, i + 1, 0, categories[i]));
+		}
+		
+		var pieSeries = pieChart.ChartData.Series.Add(pieWorkbook.GetCell(0, 0, 1, "Продажи"), pieChart.Type);
+		
+		var pieColors = new[]
+		{
+			System.Drawing.Color.FromArgb(68, 114, 196),
+			System.Drawing.Color.FromArgb(237, 125, 49),
+			System.Drawing.Color.FromArgb(112, 173, 71),
+			System.Drawing.Color.FromArgb(255, 192, 0),
+			System.Drawing.Color.FromArgb(192, 0, 0)
+		};
+		
+		for (int i = 0; i < values.Length; i++)
+		{
+			var dataPoint = pieSeries.DataPoints.AddDataPointForPieSeries(pieWorkbook.GetCell(0, i + 1, 1, values[i]));
+			dataPoint.Format.Fill.FillType = FillType.Solid;
+			dataPoint.Format.Fill.SolidFillColor.Color = pieColors[i];
+		}
+		
+		pieChart.HasTitle = true;
+		pieChart.ChartTitle.AddTextFrameForOverriding("Круговая диаграмма");
+		
+		var columnChart = slide.Shapes.AddChart(ChartType.ClusteredColumn, columnChartX, chartY, chartWidth, chartHeight);
+		var columnWorkbook = columnChart.ChartData.ChartDataWorkbook;
+		
+		columnChart.ChartData.Series.Clear();
+		columnChart.ChartData.Categories.Clear();
+		
+		for (int i = 0; i < categories.Length; i++)
+		{
+			columnChart.ChartData.Categories.Add(columnWorkbook.GetCell(0, i + 1, 0, categories[i]));
+		}
+		
+		var columnSeries = columnChart.ChartData.Series.Add(columnWorkbook.GetCell(0, 0, 1, "Продажи"), columnChart.Type);
+		
+		for (int i = 0; i < values.Length; i++)
+		{
+			columnSeries.DataPoints.AddDataPointForBarSeries(columnWorkbook.GetCell(0, i + 1, 1, values[i]));
+		}
+		
+		columnSeries.Format.Fill.FillType = FillType.Solid;
+		columnSeries.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
+		
+		columnChart.HasTitle = true;
+		columnChart.ChartTitle.AddTextFrameForOverriding("Столбчатая диаграмма");
 	}
 
 	private void SetSlideTitle(ISlide slide, string title)
