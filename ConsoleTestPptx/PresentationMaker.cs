@@ -56,6 +56,22 @@ public class PresentationMaker
 		secondPortion.PortionFormat.FontHeight = 36;
 		secondPortion.PortionFormat.FillFormat.FillType = FillType.Solid;
 		secondPortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Purple;
+
+		var thirdTextWidth = 800f;
+		var thirdTextHeight = 100f;
+		var thirdX = (float)slideSize.Width - thirdTextWidth;
+		var thirdY = 0f;
+		
+		var thirdTextBox = slide.Shapes.AddAutoShape(ShapeType.Rectangle, thirdX, thirdY, thirdTextWidth, thirdTextHeight);
+		thirdTextBox.FillFormat.FillType = FillType.NoFill;
+		thirdTextBox.LineFormat.FillFormat.FillType = FillType.NoFill;
+		thirdTextBox.Rotation = 45f;
+		thirdTextBox.TextFrame.Text = "Очень длинный текст, который должен выйти за рамки слайда и быть видимым даже при повороте на 45 градусов";
+		thirdTextBox.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Left;
+		var thirdPortion = thirdTextBox.TextFrame.Paragraphs[0].Portions[0];
+		thirdPortion.PortionFormat.FontHeight = 36;
+		thirdPortion.PortionFormat.FillFormat.FillType = FillType.Solid;
+		thirdPortion.PortionFormat.FillFormat.SolidFillColor.Color = System.Drawing.Color.Black;
 	}
 
 	private async Task<string> CreateFilename()
