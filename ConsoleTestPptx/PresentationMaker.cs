@@ -163,13 +163,13 @@ public class PresentationMaker
 			
 			var textCell = dataRow[0];
 			textCell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Left;
-			textCell.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Top;
+			textCell.TextAnchorType = TextAnchorType.Top;
 			var textPortion = textCell.TextFrame.Paragraphs[0].Portions[0];
 			textPortion.PortionFormat.FontHeight = 12;
 			
 			var dateCell = dataRow[1];
 			dateCell.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Center;
-			dateCell.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Center;
+			dateCell.TextAnchorType = TextAnchorType.Center;
 			var datePortion = dateCell.TextFrame.Paragraphs[0].Portions[0];
 			datePortion.PortionFormat.FontHeight = 12;
 			datePortion.PortionFormat.FillFormat.FillType = FillType.Solid;
@@ -177,21 +177,21 @@ public class PresentationMaker
 			
 			var numberCell1 = dataRow[2];
 			numberCell1.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Right;
-			numberCell1.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Bottom;
+			numberCell1.TextAnchorType = TextAnchorType.Bottom;
 			var numberPortion1 = numberCell1.TextFrame.Paragraphs[0].Portions[0];
 			numberPortion1.PortionFormat.FontHeight = 12;
 			numberPortion1.PortionFormat.LatinFont = new FontData("Arial");
 			
 			var numberCell2 = dataRow[3];
 			numberCell2.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Right;
-			numberCell2.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Bottom;
+			numberCell2.TextAnchorType = TextAnchorType.Bottom;
 			var numberPortion2 = numberCell2.TextFrame.Paragraphs[0].Portions[0];
 			numberPortion2.PortionFormat.FontHeight = 12;
 			numberPortion2.PortionFormat.LatinFont = new FontData("Calibri");
 			
 			var numberCell3 = dataRow[4];
 			numberCell3.TextFrame.Paragraphs[0].ParagraphFormat.Alignment = TextAlignment.Right;
-			numberCell3.TextFrame.TextFrameFormat.AnchoringType = TextAnchorType.Bottom;
+			numberCell3.TextAnchorType = TextAnchorType.Bottom;
 			var numberPortion3 = numberCell3.TextFrame.Paragraphs[0].Portions[0];
 			numberPortion3.PortionFormat.FontHeight = 12;
 		}
