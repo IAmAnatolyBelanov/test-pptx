@@ -80,13 +80,35 @@ public class PresentationMaker
 		var slide = _presentationScope.Presentation.Slides.AddEmptySlide(_presentationScope.Presentation.LayoutSlides[0]);
 		var slideSize = _presentationScope.Presentation.SlideSize.Size;
 		
+		IAutoShape? titleShape = null;
 		foreach (IShape shape in slide.Shapes)
 		{
-			if (shape is IAutoShape autoShape && autoShape.Placeholder != null && autoShape.Placeholder.Type == PlaceholderType.Title)
+			if (shape is IAutoShape autoShape && autoShape.TextFrame != null)
 			{
-				autoShape.TextFrame.Text = "название таблицы";
-				break;
+				if (shape.Placeholder != null && 
+				    (shape.Placeholder.Type == PlaceholderType.Title || shape.Placeholder.Type == PlaceholderType.CenteredTitle))
+				{
+					titleShape = autoShape;
+					break;
+				}
 			}
+		}
+		
+		if (titleShape == null)
+		{
+			foreach (IShape shape in slide.Shapes)
+			{
+				if (shape is IAutoShape autoShape && autoShape.TextFrame != null && shape.Y < 200)
+				{
+					titleShape = autoShape;
+					break;
+				}
+			}
+		}
+		
+		if (titleShape != null)
+		{
+			titleShape.TextFrame.Text = "название таблицы";
 		}
 		
 		var tableMarginCm = 2.0;
