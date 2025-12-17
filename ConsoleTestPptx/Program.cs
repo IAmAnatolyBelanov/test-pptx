@@ -20,6 +20,7 @@ public class Program
 		await using var scope = host.Services.CreateAsyncScope();
 		var presentationScope = scope.ServiceProvider.GetRequiredService<PresentationScope>();
 		presentationScope.Presentation = new Presentation();
+		presentationScope.Presentation.SlideSize.SetSize(1920f, 1080f, SlideSizeScaleType.DoNotScale);
 		var maker = scope.ServiceProvider.GetRequiredService<PresentationMaker>();
 		await maker.BuildPresentation();
 	}
