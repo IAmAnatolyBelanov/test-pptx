@@ -61,6 +61,9 @@ public class PresentationMaker
 		AddLineChartSlide(2, 30);
 		AddLineChartSlide(30, 40);
 		AddAreaChartSlide(3, 5);
+		AddAreaChartSlide(30, 5);
+		AddAreaChartSlide(3, 30);
+		AddAreaChartSlide(30, 40);
 		AddScatterChartSlide();
 		AddCombinedChartSlide();
 		var filename = await CreateFilename();
