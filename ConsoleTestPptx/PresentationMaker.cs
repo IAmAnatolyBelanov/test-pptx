@@ -19,6 +19,9 @@ public class PresentationMaker
 		AddTableSlide(4);
 		AddTableSlide(20);
 		AddColumnChartSlide(2, 6);
+		AddColumnChartSlide(8, 6);
+		AddColumnChartSlide(2, 30);
+		AddColumnChartSlide(8, 30);
 		AddPieChartSlide();
 		AddLineChartSlide();
 		AddAreaChartSlide();
