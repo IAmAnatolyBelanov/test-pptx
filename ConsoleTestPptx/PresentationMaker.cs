@@ -57,6 +57,9 @@ public class PresentationMaker
 			{ "Другое3", 5 } 
 		});
 		AddLineChartSlide(2, 8);
+		AddLineChartSlide(30, 8);
+		AddLineChartSlide(2, 30);
+		AddLineChartSlide(30, 40);
 		AddAreaChartSlide();
 		AddScatterChartSlide();
 		AddCombinedChartSlide();
