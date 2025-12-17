@@ -248,6 +248,11 @@ public class PresentationMaker
 			series2.DataPoints.AddDataPointForBarSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
 		}
 		
+		series1.Format.Fill.FillType = FillType.Solid;
+		series1.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
+		series2.Format.Fill.FillType = FillType.Solid;
+		series2.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(237, 125, 49);
+		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Продажи по месяцам");
 	}
@@ -280,9 +285,20 @@ public class PresentationMaker
 		
 		var series = chart.ChartData.Series.Add(workbook.GetCell(0, 0, 1, "Доходы"), chart.Type);
 		
+		var pieColors = new[]
+		{
+			System.Drawing.Color.FromArgb(68, 114, 196),
+			System.Drawing.Color.FromArgb(237, 125, 49),
+			System.Drawing.Color.FromArgb(112, 173, 71),
+			System.Drawing.Color.FromArgb(255, 192, 0),
+			System.Drawing.Color.FromArgb(192, 0, 0)
+		};
+		
 		for (int i = 0; i < values.Length; i++)
 		{
-			series.DataPoints.AddDataPointForPieSeries(workbook.GetCell(0, i + 1, 1, values[i]));
+			var dataPoint = series.DataPoints.AddDataPointForPieSeries(workbook.GetCell(0, i + 1, 1, values[i]));
+			dataPoint.Format.Fill.FillType = FillType.Solid;
+			dataPoint.Format.Fill.SolidFillColor.Color = pieColors[i];
 		}
 		
 		chart.HasTitle = true;
@@ -324,6 +340,12 @@ public class PresentationMaker
 			series1.DataPoints.AddDataPointForLineSeries(workbook.GetCell(0, i + 1, 1, values1[i]));
 			series2.DataPoints.AddDataPointForLineSeries(workbook.GetCell(0, i + 1, 2, values2[i]));
 		}
+		
+		series1.Format.Line.FillFormat.FillType = FillType.Solid;
+		series1.Format.Line.FillFormat.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
+		
+		series2.Format.Line.FillFormat.FillType = FillType.Solid;
+		series2.Format.Line.FillFormat.SolidFillColor.Color = System.Drawing.Color.FromArgb(237, 125, 49);
 		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Динамика роста");
@@ -368,6 +390,13 @@ public class PresentationMaker
 			series3.DataPoints.AddDataPointForAreaSeries(workbook.GetCell(0, i + 1, 3, values3[i]));
 		}
 		
+		series1.Format.Fill.FillType = FillType.Solid;
+		series1.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
+		series2.Format.Fill.FillType = FillType.Solid;
+		series2.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(237, 125, 49);
+		series3.Format.Fill.FillType = FillType.Solid;
+		series3.Format.Fill.SolidFillColor.Color = System.Drawing.Color.FromArgb(112, 173, 71);
+		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Продажи по регионам");
 	}
@@ -400,6 +429,9 @@ public class PresentationMaker
 				workbook.GetCell(0, i + 1, 1, xValues[i]),
 				workbook.GetCell(0, i + 1, 2, yValues[i]));
 		}
+		
+		series.Format.Line.FillFormat.FillType = FillType.Solid;
+		series.Format.Line.FillFormat.SolidFillColor.Color = System.Drawing.Color.FromArgb(68, 114, 196);
 		
 		chart.HasTitle = true;
 		chart.ChartTitle.AddTextFrameForOverriding("Корреляция показателей");
